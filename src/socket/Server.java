@@ -15,7 +15,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class Server {
     private ServerSocket serverSocket;
-    public Server(){
+
+    public Server() {
         try {
             /*
             ServerSocket在创建的时候要申请一个固定的端口号,客户端才能通过这个端口建立连接
@@ -31,7 +32,8 @@ public class Server {
         }
 
     }
-    public void start(){
+
+    public void start() {
         try {
             /*
             ServerSocket的accept方法是一个阻塞方法
@@ -40,36 +42,58 @@ public class Server {
             相当于时接电话的动作
             阻塞方法:调用后,程序就"卡住"不往下执行了.
              */
-           while(true){
-                System.out.println("wait linking");
-                Socket socket = serverSocket.accept();
+                while (true) {
+                    System.out.println("wait linking");
+                    Socket socket = serverSocket.accept();
 
-                System.out.println("one player already");
+                    System.out.println("one player already");
 
+                //启动一个线程来处理该客户端的交互
+                ClientHandler clientHandler = new ClientHandler(socket);
+                Thread thread = new Thread(clientHandler);
+                thread.start();
+                }
+        } catch (IOException e) {
+                    e.printStackTrace();
+          }
+    }
 
-            InputStream in = socket.getInputStream();
-            InputStreamReader isr = new InputStreamReader(in, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(isr);
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.start();
+    }
+    /**
+     * 该线程任务是用一个线程来处理一个客户端的交互工作
+     */
+    private class ClientHandler implements Runnable {
+        private String host;//记录远端计算机的地址信息
+        private Socket socket;
+         public ClientHandler (Socket socket){
+             this.socket = socket;
+             this.host = socket.getInetAddress().getHostAddress();
+         }
+        public void run() {
 
-            String line;
+            try {
+                InputStream in = socket.getInputStream();
+                InputStreamReader isr = new InputStreamReader(in, StandardCharsets.UTF_8);
+                BufferedReader br = new BufferedReader(isr);
+
+                String line;
             /*
             这里的BufferedReader读取时底下连接的流是通过Socket获取的输入流
             当远端计算机还处于连接状态,但是暂时没有发送内容是readLine方法会处于阻塞状态,
             直到对方发送过来一行字符串为止.
             如果返回值为null,则表示对方断开了连接(对方调用了socket.close()))
              */
-            while((line = br.readLine()) != null){
-                System.out.println(line);
+                while ((line = br.readLine()) != null) {
+                    System.out.println(host + " says: " + line);
+                }
+            } catch (IOException e) {
+//                e.printStackTrace();
+            } finally {
             }
         }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
+    }
 
-        }
-    }
-    public static void main(String[] args){
-        Server server = new Server();
-        server.start();
-    }
 }

@@ -51,7 +51,7 @@ public class Client {
                 if("exit".equalsIgnoreCase(line)){
                     break;
                 }
-                pw.println("Client says:" + line);
+                pw.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
