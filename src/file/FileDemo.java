@@ -2,7 +2,7 @@ package file;
 
 import java.io.File;
 
-public class FileDemo {
+public class  FileDemo {
     public static void main(String[] args){
         /*
         实际开发中我们不会使用绝对路径,虽然清晰明了,但是不利于跨平台.
