@@ -16,7 +16,7 @@ public class CollectionDemo3 {
         System.out.println("c:" + c);
 
         p.setX(2);
-
+    
         System.out.println("p:" + p);
         System.out.println("c:" + c);
     }
