@@ -21,7 +21,8 @@ public class SortListDemo {
         System.out.println(list);
         Collections.sort(list);//排序
         System.out.println(list);
-
+        Collections.sort(list,(o1, o2) -> o2 - o1);
+        System.out.println(list);
         Collections.shuffle(list);//乱序
         System.out.println(list);
     }
